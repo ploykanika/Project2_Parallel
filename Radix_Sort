@@ -16,7 +16,7 @@ using namespace std;
 using namespace std::chrono;
 
 #define WSIZE 32
-#define LOOPS 100
+#define LOOPS 3
 #define UPPER_BIT 10
 #define LOWER_BIT 0
 
@@ -29,48 +29,15 @@ inline unsigned arraysize(const T(&v)[S])
 	return S;
 }
 
-// template<typename T>
-// void printArray(T &arr)
-// {
-// 	for (int i = 0; i < arraysize(arr); ++i)
-// 	{
-// 		cout << "Array[" << i << "]: " << *(arr + i) << endl;
-// 	}
-// }
-
-// template<typename T>
-// void fillArray(T &arr)
-// {
-// 	srand(time(NULL));
-// 	for (int i = 0; i < arraysize(arr); ++i)
-// 	{
-// 		arr[i] = rand() % 1024;
-// 	}
-// }
-
 void print(int arr[], int n)
 {
-    printf("\n-------------------------------------------------\nRadix Sort:\t\t");
+    printf("\n-------------------------------------------------\nRadix Sort:\t");
 	for (int i = 0; i < n; i++)
 	{
 		cout << arr[i] << " ";
 	}
 	cout << endl;
 }
-
-// template<typename T>
-// T findMax(T &arr)
-// {
-// 	T max = 0;
-// 	for (int i = 0; i < arraysize(arr); ++i)
-// 	{
-// 		if (arr[i] > max)
-// 		{
-// 			max = arr[i];
-// 		}
-// 	}
-// 	return max;
-// }
 
 __device__ __host__ int getMax(int arr[], int n)
 {
@@ -174,10 +141,11 @@ __global__ void parallelRadix()
 
 int main() {
 
-    int arr[] = {170, 45, 75, 90, 802, 24, 2, 66}; 
-    int n = 8; 
-    printf("\n-------------------------------------------------\nUnsorted Array:\t\t");
-    for(int i=0;i<arraysize(arr);i++){
+	int n = WSIZE * LOOPS; 
+	int arr[n];
+    printf("\n-------------------------------------------------\nUnsorted Array:\t");
+    for(int i=0;i<n;i++){
+		arr[i] = rand() % 100;
 		printf("%d ", arr[i]);
 	}
     radixsort(arr, n); 
@@ -223,8 +191,8 @@ int main() {
 	}
 
 	printf("Parallel Radix Sort:\n");
-	printf("Array size = %d\n", WSIZE * LOOPS);
-	printf("Time elapsed = %fseconds\n", totalTime);
+	printf("Array size = %d\n", n);
+	printf("Time elapsed = %f milliseconds\n", totalTime);
 
 	/* Serial Radix Sort */
 
@@ -266,8 +234,8 @@ int main() {
 	}
 
 	printf("\nSerial Radix Sort:\n");
-	printf("Array size = %d\n", WSIZE * LOOPS);
-    printf("Time elapsed = %fseconds\n\n", totalTime);
+	printf("Array size = %d\n", n);
+    printf("Time elapsed = %f miliseconds\n\n", totalTime);
 
 	return 0;
 }
